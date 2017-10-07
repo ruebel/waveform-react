@@ -1,0 +1,59 @@
+{
+  "name": "waveform-react-examples",
+  "version": "1.0.0",
+  "main": "index.js",
+  "homepage": "https://ruebel.github.io/waveform-react",
+  "author": "Randy Uebel <randy.uebel@gmail.com> (http://randyuebel.com/)",
+  "license": "MIT",
+  "scripts": {
+    "build": "react-scripts build",
+    "lint": "esw -f simple-detail --color src",
+    "lint:watch": "npm run lint -- --watch",
+    "start": "react-scripts start"
+  },
+  "babel": {
+    "presets": [
+      [
+        "env",
+        {
+          "targets": {
+            "browser": true
+          }
+        }
+      ],
+      "stage-2"
+    ],
+    "plugins": [
+      [
+        "styled-components",
+        {
+          "displayName": true,
+          "preprocess": false
+        }
+      ]
+    ]
+  },
+  "eslintConfig": {
+    "extends": "gsandf-react",
+    "parser": "babel-eslint"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.18.0",
+    "babel-core": "^6.18.2",
+    "babel-eslint": "^8.0.1",
+    "babel-preset-env": "^1.2.1",
+    "babel-preset-stage-2": "^6.18.0",
+    "babel-watch": "^2.0.5",
+    "eslint": "^4.6.1",
+    "eslint-config-gsandf-react": "^0.2.0",
+    "eslint-watch": "^3.1.2",
+    "react": "^16.0.0",
+    "react-dom": "^16.0.0",
+    "react-scripts": "^1.0.13",
+    "styled-components": "^2.1.2"
+  },
+  "dependencies": {
+    "prop-types": "^15.5.10",
+    "react-color": "^2.13.8"
+  }
+}

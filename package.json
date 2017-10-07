@@ -1,0 +1,60 @@
+{
+  "name": "waveform-react",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Randy Uebel <randy.uebel@gmail.com> (http://randyuebel.com/)",
+  "license": "MIT",
+  "scripts": {
+    "build": "run-s build:src feedexamples build:docs",
+    "build:src": "babel ./src -d ./lib",
+    "build:docs": "cd ./examples && npm run build",
+    "postbuild:docs": "run-s copy:docs",
+    "copy:docs": "cpx \"./examples/build/**/*\" \"./docs\" -C",
+    "feedexamples": "cpx ./src/**/* ./examples/src/lib -u",
+    "feedexamples:watch": "npm run feedexamples -- -w",
+    "lint": "esw -f simple-detail --color src",
+    "lint:watch": "npm run lint -- --watch",
+    "postinstall": "cd ./examples && yarn install",
+    "start": "run-p feedexamples:watch start:examples",
+    "start:examples": "cd ./examples && npm run start"
+  },
+  "babel": {
+    "presets": [
+      [
+        "env",
+        {
+          "targets": {
+            "browser": true
+          }
+        }
+      ],
+      "stage-2"
+    ]
+  },
+  "eslintConfig": {
+    "extends": "gsandf-react",
+    "parser": "babel-eslint"
+  },
+  "peerDependencies": {
+    "react": "^0.14.9 || ^15.3.0 || ^16.0.0-rc || ^16.0",
+    "react-dom": "^0.14.9 || ^15.3.0 || ^16.0.0-rc || ^16.0"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.18.0",
+    "babel-core": "^6.18.2",
+    "babel-eslint": "^8.0.1",
+    "babel-preset-env": "^1.2.1",
+    "babel-preset-stage-2": "^6.18.0",
+    "babel-watch": "^2.0.5",
+    "cpx": "^1.5.0",
+    "eslint": "^4.6.1",
+    "eslint-config-gsandf-react": "^0.2.0",
+    "eslint-watch": "^3.1.2",
+    "npm-run-all": "^4.1.1",
+    "react": "^16.0.0",
+    "react-dom": "^16.0.0"
+  },
+  "dependencies": {
+    "prop-types": "^15.5.10"
+  }
+}
