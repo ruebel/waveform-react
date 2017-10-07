@@ -18,6 +18,8 @@ class MyComponent extends React.Component {
         // Audio buffer
         buffer={this.state.buffer}
         waveStyle={{
+          // animate waveform on draw (default: true)
+          animate: true,
           // waveform color
           color: '#000',
           // waveform height
