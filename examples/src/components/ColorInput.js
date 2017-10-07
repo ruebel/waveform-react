@@ -1,7 +1,27 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { SketchPicker } from 'react-color';
-import Button from './Button';
+import styled from 'styled-components';
+import ButtonBase from './Button';
+
+const Button = styled(ButtonBase)`
+  background: this.props.color;
+  height: 25px;
+  width: 50px;
+`;
+
+const Inner = styled.div`
+  bottom: 0;
+  left: 0;
+  position: fixed;
+  right: 0;
+  top: 0;
+`;
+
+const Wrapper = styled.div`
+  position: absolute;
+  z-index: 2;
+`;
 
 class ColorInput extends React.Component {
   state = {
@@ -19,36 +39,15 @@ class ColorInput extends React.Component {
   render() {
     return (
       <div>
-        <Button
-          onClick={this.handleClick}
-          style={{
-            background: this.props.color,
-            height: '25px',
-            width: '50px'
-          }}
-        />
+        <Button onClick={this.handleClick} />
         {this.state.showPicker ? (
-          <div
-            style={{
-              position: 'absolute',
-              zIndex: '2'
-            }}
-          >
-            <div
-              style={{
-                bottom: '0px',
-                left: '0px',
-                position: 'fixed',
-                right: '0px',
-                top: '0px'
-              }}
-              onClick={this.handleClose}
-            />
+          <Wrapper>
+            <Inner onClick={this.handleClose} />
             <SketchPicker
               color={this.props.color}
               onChange={this.props.onChange}
             />
-          </div>
+          </Wrapper>
         ) : null}
       </div>
     );

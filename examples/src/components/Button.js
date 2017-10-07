@@ -6,4 +6,5 @@ export default styled.button`
   margin: 0.5em;
   font-size: 1.2em;
   font-family: inherit;
+  cursor: pointer;
 `;

@@ -57,7 +57,7 @@ class Waveform extends React.Component {
 
 Waveform.defaultProps = {
   waveStyle: {
-    background: 'transparent',
+    animate: true,
     color: '#000',
     height: 300,
     pointWidth: 1,
@@ -68,7 +68,7 @@ Waveform.defaultProps = {
 Waveform.propTypes = {
   buffer: PropTypes.object,
   waveStyle: PropTypes.shape({
-    background: PropTypes.string,
+    animate: PropTypes.bool,
     color: PropTypes.string,
     height: PropTypes.number,
     pointWidth: PropTypes.number,

@@ -1,7 +1,7 @@
 {
   "name": "waveform-react",
   "description": "draw audio waveforms with react",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "main": "lib/index.js",
   "author": "Randy Uebel <randy.uebel@gmail.com> (http://randyuebel.com/)",
   "repository": "https://github.com/ruebel/waveform-react",

@@ -1,8 +1,35 @@
 /**
+ * Animate the drawing of the wave
+ */
+const animateWave = (ctx, bounds, style, maxAmp, scaleFactor = 1) => {
+  if (scaleFactor <= 100) {
+    setTimeout(() => {
+      requestAnimationFrame(() =>
+        drawPoints(ctx, bounds, style, maxAmp, scaleFactor / 100)
+      );
+      animateWave(ctx, bounds, style, maxAmp, scaleFactor + 1);
+    }, 1);
+  }
+};
+/**
  * Convienence function to draw a point in waveform
  */
 const drawPoint = (ctx, x, y, width, height) => {
   ctx.fillRect(x, y, width, height);
+};
+/**
+ * Draw all the points in the wave
+ */
+const drawPoints = (ctx, bounds, style, maxAmp, scaleFactor = 1) => {
+  bounds.forEach((bound, i) => {
+    drawPoint(
+      ctx,
+      i * style.pointWidth,
+      (1 + bound.min) * maxAmp,
+      style.pointWidth,
+      Math.max(1, (bound.max - bound.min) * maxAmp) * scaleFactor
+    );
+  });
 };
 /**
  * Draw a waveform on a canvas
@@ -29,28 +56,32 @@ export const drawWaveform = (buffer, canvas, style) => {
     const step = Math.ceil(wave.length / pointCnt);
     // find the max height we can draw
     const maxAmp = height / 2;
-    // draw each step in the wave
-    for (let i = 0; i < pointCnt; i++) {
-      // get the max and min values at this step
-      const bounds = getBounds(wave.slice(i * step, i * step + step));
-      // draw a line from min to max at this step
-      drawPoint(
-        ctx,
-        i * style.pointWidth,
-        (1 + bounds.min) * maxAmp,
-        style.pointWidth,
-        Math.max(1, (bounds.max - bounds.min) * maxAmp)
-      );
-    }
+    // Get array of bounds of each step
+    const bounds = getBoundArray(wave, pointCnt, step);
+    animateWave(ctx, bounds, style, maxAmp, style.animate ? 1 : 100);
     resolve();
   });
+};
+/**
+ * Calculate the bounds of each step in the buffer
+ */
+const getBoundArray = (wave, pointCnt, step) => {
+  let bounds = [];
+  for (let i = 0; i < pointCnt; i++) {
+    // get the max and min values at this step
+    bounds = [...bounds, getBounds(wave.slice(i * step, i * step + step))];
+  }
+  return bounds;
 };
 /**
  * Get the max and min values of an array
  */
 const getBounds = values => {
-  return {
-    max: Math.max(-1.0, ...values),
-    min: Math.min(1.0, ...values)
-  };
+  return values.reduce(
+    (total, v) => ({
+      max: v > total.max ? v : total.max,
+      min: v < total.min ? v : total.min
+    }),
+    { max: -1.0, min: 1.0 }
+  );
 };

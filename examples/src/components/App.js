@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import Button from './Button';
+import Checkbox from './Checkbox';
 import ColorInput from './ColorInput';
 import FileInput from './FileInput';
 import NumberInput from './NumberInput';
@@ -37,6 +38,7 @@ class App extends React.PureComponent {
     buffer: null,
     context: null,
     waveStyle: {
+      animate: true,
       color: color.primary,
       height: 150,
       pointWidth: 1,
@@ -102,6 +104,13 @@ class App extends React.PureComponent {
           <NumberInput
             onChange={e => this.setValue(e, 'pointWidth')}
             value={this.state.waveStyle.pointWidth}
+          />
+        </InputGroup>
+        <InputGroup>
+          <Heading>Animate</Heading>
+          <Checkbox
+            onChange={e => this.setValue(e.target.checked, 'animate')}
+            value={this.state.waveStyle.animate}
           />
         </InputGroup>
         <Waveform buffer={this.state.buffer} waveStyle={this.state.waveStyle} />
