@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import ButtonBase from './Button';
 
 const Button = styled(ButtonBase)`
-  background: this.props.color;
+  background: ${p => p.color};
   height: 25px;
   width: 50px;
 `;
@@ -39,7 +39,7 @@ class ColorInput extends React.Component {
   render() {
     return (
       <div>
-        <Button onClick={this.handleClick} />
+        <Button color={this.props.color} onClick={this.handleClick} />
         {this.state.showPicker ? (
           <Wrapper>
             <Inner onClick={this.handleClose} />
