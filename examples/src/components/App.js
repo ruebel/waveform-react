@@ -21,6 +21,11 @@ const InputGroup = styled.div`
   margin: 10px 0;
 `;
 
+const WaveformWrapper = styled.div`
+  height: 300px;
+  width: 100%;
+`;
+
 const Wrapper = styled.div`
   background: linear-gradient(
     to bottom,
@@ -37,6 +42,7 @@ class App extends React.PureComponent {
   state = {
     buffer: null,
     context: null,
+    responsive: true,
     waveStyle: {
       animate: true,
       color: color.primary,
@@ -62,6 +68,10 @@ class App extends React.PureComponent {
     const files = event.target.files;
     const file = window.URL.createObjectURL(files[0]);
     this.getFile(file);
+  };
+
+  setResponsive = responsive => {
+    this.setState({ responsive });
   };
 
   setValue = (val, prop) => {
@@ -113,7 +123,20 @@ class App extends React.PureComponent {
             value={this.state.waveStyle.animate}
           />
         </InputGroup>
-        <Waveform buffer={this.state.buffer} waveStyle={this.state.waveStyle} />
+        <InputGroup>
+          <Heading>Responsive</Heading>
+          <Checkbox
+            onChange={e => this.setResponsive(e.target.checked)}
+            value={this.state.responsive}
+          />
+        </InputGroup>
+        <WaveformWrapper>
+          <Waveform
+            buffer={this.state.buffer}
+            responsive={this.state.responsive}
+            waveStyle={this.state.waveStyle}
+          />
+        </WaveformWrapper>
       </Wrapper>
     );
   }

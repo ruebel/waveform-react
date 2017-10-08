@@ -7,6 +7,12 @@ class Waveform extends React.Component {
     resizing: null
   };
 
+  componentDidMount() {
+    if (this.props.responsive) {
+      window.addEventListener('resize', this.debounceDraw, false);
+    }
+  }
+
   componentWillReceiveProps(next) {
     if (
       next.buffer !== this.props.buffer ||
@@ -16,10 +22,21 @@ class Waveform extends React.Component {
     ) {
       this.debounceDraw(next.buffer);
     }
+    if (next.responsive !== this.props.responsive) {
+      if (next.responsive) {
+        window.addEventListener('resize', this.debounceDraw, false);
+      } else {
+        window.removeEventListener('resize', this.debounceDraw);
+      }
+    }
   }
 
   shouldComponentUpdate() {
     return false;
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.debounceDraw);
   }
 
   debounceDraw = () => {
@@ -34,28 +51,33 @@ class Waveform extends React.Component {
     drawWaveform(
       buffer || this.props.buffer,
       this.canvas,
-      this.props.waveStyle
+      this.props.responsive
+        ? {
+          ...this.props.waveStyle,
+          height: this.wrapper.offsetHeight,
+          width: this.wrapper.offsetWidth
+        }
+        : this.props.waveStyle
     );
   };
 
   render() {
     return (
-      <canvas
-        drawing={this.state.drawing}
-        ref={canvas => {
-          this.canvas = canvas;
-        }}
-        style={{
-          height: this.props.waveStyle.height + 'px',
-          imageRendering: '-webkit-optimize-contrast !important',
-          width: this.props.waveStyle.width + 'px'
-        }}
-      />
+      <div
+        ref={wrapper => (this.wrapper = wrapper)}
+        style={{ height: '100%', width: '100%' }}
+      >
+        <canvas
+          drawing={this.state.drawing}
+          ref={canvas => (this.canvas = canvas)}
+        />
+      </div>
     );
   }
 }
 
 Waveform.defaultProps = {
+  responsive: false,
   waveStyle: {
     animate: true,
     color: '#000',
@@ -67,6 +89,7 @@ Waveform.defaultProps = {
 
 Waveform.propTypes = {
   buffer: PropTypes.object,
+  responsive: PropTypes.bool,
   waveStyle: PropTypes.shape({
     animate: PropTypes.bool,
     color: PropTypes.string,
