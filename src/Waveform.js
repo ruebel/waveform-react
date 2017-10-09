@@ -67,10 +67,7 @@ class Waveform extends React.Component {
         ref={wrapper => (this.wrapper = wrapper)}
         style={{ height: '100%', width: '100%' }}
       >
-        <canvas
-          drawing={this.state.drawing}
-          ref={canvas => (this.canvas = canvas)}
-        />
+        <canvas ref={canvas => (this.canvas = canvas)} />
       </div>
     );
   }
