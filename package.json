@@ -1,7 +1,7 @@
 {
   "name": "waveform-react",
   "description": "draw audio waveforms with react",
-  "version": "0.1.5",
+  "version": "0.1.7",
   "main": "lib/index.js",
   "author": "Randy Uebel <randy.uebel@gmail.com> (http://randyuebel.com/)",
   "repository": {
@@ -10,16 +10,18 @@
   },
   "license": "MIT",
   "scripts": {
-    "build": "run-s build:src feedexamples build:docs",
+    "build": "npm run build:src",
+    "build:all": "run-s build:src build:docs",
     "build:src": "babel ./src -d ./lib",
     "build:docs": "cd ./examples && npm run build",
-    "postbuild:docs": "run-s copy:docs",
     "copy:docs": "cpx \"./examples/build/**/*\" \"./docs\" -C",
     "feedexamples": "cpx ./src/**/* ./examples/src/lib -u",
     "feedexamples:watch": "npm run feedexamples -- -w",
+    "install:examples": "cd ./examples && yarn install",
     "lint": "esw -f simple-detail --color src",
     "lint:watch": "npm run lint -- --watch",
-    "postinstall": "cd ./examples && yarn install",
+    "prebuild:docs": "npm run feedexamples",
+    "postbuild:docs": "run-s copy:docs",
     "start": "run-p feedexamples:watch start:examples",
     "start:examples": "cd ./examples && npm run start"
   },
