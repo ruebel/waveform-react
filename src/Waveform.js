@@ -1,10 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { drawWaveform } from './utils';
+import { calculateWaveData, drawWaveform } from './utils';
 
 class Waveform extends React.Component {
   state = {
-    resizing: null
+    data: null,
+    resizing: null,
+    width: null
   };
 
   componentDidMount() {
@@ -13,14 +15,26 @@ class Waveform extends React.Component {
     }
   }
 
-  componentWillReceiveProps(next) {
+  async componentWillReceiveProps(next) {
     if (
       next.buffer !== this.props.buffer ||
+      next.waveStyle.width !== this.props.waveStyle.width ||
+      next.waveStyle.pointWidth !== this.props.waveStyle.pointWidth
+    ) {
+      const width = this.getWidth(next, this.wrapper);
+      const data = await calculateWaveData(
+        next.buffer,
+        width,
+        next.waveStyle.pointWidth
+      );
+      this.setState({ data, width });
+      this.debounceDraw();
+    } else if (
       Object.keys(next.waveStyle).some(
         k => next.waveStyle[k] !== this.props.waveStyle[k]
       )
     ) {
-      this.debounceDraw(next.buffer);
+      this.debounceDraw();
     }
     if (next.responsive !== this.props.responsive) {
       if (next.responsive) {
@@ -39,27 +53,38 @@ class Waveform extends React.Component {
     window.removeEventListener('resize', this.debounceDraw);
   }
 
-  debounceDraw = () => {
+  debounceDraw = animate => {
     clearTimeout(this.state.resizing);
-    const resizing = setTimeout(this.draw, 200);
+    const resizing = setTimeout(() => this.draw(animate), 200);
     this.setState({
       resizing
     });
   };
 
-  draw = buffer => {
-    drawWaveform(
-      buffer || this.props.buffer,
-      this.canvas,
-      this.props.responsive
-        ? {
-          ...this.props.waveStyle,
-          height: this.wrapper.offsetHeight,
-          width: this.wrapper.offsetWidth
-        }
-        : this.props.waveStyle
-    );
+  draw = async animate => {
+    const width = this.getWidth(this.props, this.wrapper);
+    let data = this.state.data;
+    if (this.state.width !== width) {
+      data = await calculateWaveData(
+        this.props.buffer,
+        width,
+        this.props.waveStyle.pointWidth
+      );
+      this.setState({ data, width });
+    }
+    drawWaveform(data, this.canvas, {
+      ...this.props.waveStyle,
+      animate: this.props.waveStyle.animate && animate,
+      height: this.props.responsive
+        ? this.wrapper.offsetHeight
+        : this.props.waveStyle.height,
+      width
+    });
   };
+
+  getWidth(props, wrapper) {
+    return props.responsive ? wrapper.offsetWidth : props.waveStyle.width;
+  }
 
   render() {
     return (

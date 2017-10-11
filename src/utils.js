@@ -12,6 +12,22 @@ const animateWave = (ctx, bounds, style, maxAmp, scaleFactor = 1) => {
   }
 };
 /**
+ * Calculate all wave data points
+ */
+export const calculateWaveData = (buffer, width, pointWidth) => {
+  return new Promise(resolve => {
+    if (!buffer) return resolve([]);
+    // get the wave data
+    const wave = buffer.getChannelData(0);
+    const pointCnt = width / pointWidth;
+    // find how many steps we are going to draw
+    const step = Math.ceil(wave.length / pointCnt);
+    // Get array of bounds of each step
+    const bounds = getBoundArray(wave, pointCnt, step);
+    resolve(bounds);
+  });
+};
+/**
  * Convienence function to draw a point in waveform
  */
 const drawPoint = (ctx, x, y, width, height) => {
@@ -37,27 +53,19 @@ const drawPoints = (ctx, bounds, style, maxAmp, scaleFactor = 1) => {
  * canvas - HTML5 canvas reference
  * style - line style to use (color)
  */
-export const drawWaveform = (buffer, canvas, style) => {
+export const drawWaveform = (bounds, canvas, style) => {
   return new Promise(resolve => {
-    if (!canvas) return;
+    if (!canvas || !bounds || !bounds.length) return resolve();
     const ctx = canvas.getContext('2d');
     // clear the canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    if (!buffer) return;
-    // get the wave data
-    const wave = buffer.getChannelData(0);
     // get our canvas size
-    const width = (canvas.width = style.width || window.innerWidth);
+    canvas.width = style.width || window.innerWidth;
     const height = (canvas.height = style.height || 300);
     // set up line style
     ctx.fillStyle = style.color;
-    const pointCnt = width / style.pointWidth;
-    // find how many steps we are going to draw
-    const step = Math.ceil(wave.length / pointCnt);
     // find the max height we can draw
     const maxAmp = height / 2;
-    // Get array of bounds of each step
-    const bounds = getBoundArray(wave, pointCnt, step);
     animateWave(ctx, bounds, style, maxAmp, style.animate ? 1 : 100);
     resolve();
   });
