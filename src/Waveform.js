@@ -86,13 +86,24 @@ class Waveform extends React.Component {
     return props.responsive ? wrapper.offsetWidth : props.waveStyle.width;
   }
 
+  handleClick = e => {
+    if (this.props.onPositionChange) {
+      this.props.onPositionChange(
+        e.nativeEvent.offsetX / this.canvas.offsetWidth
+      );
+    }
+  };
+
   render() {
     return (
       <div
         ref={wrapper => (this.wrapper = wrapper)}
         style={{ height: '100%', width: '100%' }}
       >
-        <canvas ref={canvas => (this.canvas = canvas)} />
+        <canvas
+          onClick={this.handleClick}
+          ref={canvas => (this.canvas = canvas)}
+        />
       </div>
     );
   }
@@ -111,6 +122,7 @@ Waveform.defaultProps = {
 
 Waveform.propTypes = {
   buffer: PropTypes.object,
+  onPositionChange: PropTypes.func,
   responsive: PropTypes.bool,
   waveStyle: PropTypes.shape({
     animate: PropTypes.bool,

@@ -17,6 +17,8 @@ class MyComponent extends React.Component {
       <Waveform
         // Audio buffer
         buffer={this.state.buffer}
+        // Optionally handle user manually changing position (0 - 1)
+        onPositionChange={pos => console.log(pos)}
         // redraw waveform on window size change (default: true)
         responsive={false}
         waveStyle={{
