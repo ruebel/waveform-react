@@ -4,87 +4,98 @@ import { calculateWaveData, drawWaveform } from './utils';
 
 class Waveform extends React.Component {
   state = {
-    data: null,
-    resizing: null,
-    width: null
+    data: null
+    // resizing: null,
+    // width: null
   };
 
-  componentDidMount() {
-    if (this.props.responsive) {
-      window.addEventListener('resize', this.debounceDraw, false);
-    }
-  }
+  // componentDidMount() {
+  //   if (this.props.responsive) {
+  //     window.addEventListener('resize', this.debounceDraw, false);
+  //   }
+  // }
 
   async componentWillReceiveProps(next) {
     if (
       next.buffer !== this.props.buffer ||
-      next.waveStyle.width !== this.props.waveStyle.width ||
+      next.height !== this.props.height ||
+      next.width !== this.props.width ||
       next.waveStyle.pointWidth !== this.props.waveStyle.pointWidth
     ) {
-      const width = this.getWidth(next, this.wrapper);
+      console.log('recalc', next.width, this.props.width);
+      // const width = this.getWidth(next, this.wrapper);
       const data = await calculateWaveData(
         next.buffer,
-        width,
+        next.width,
         next.waveStyle.pointWidth
       );
-      this.setState({ data, width });
-      this.debounceDraw();
+      this.setState({ data });
+      this.draw(data);
     } else if (
       Object.keys(next.waveStyle).some(
         k => next.waveStyle[k] !== this.props.waveStyle[k]
       )
     ) {
-      this.debounceDraw();
+      this.draw();
     }
-    if (next.responsive !== this.props.responsive) {
-      if (next.responsive) {
-        window.addEventListener('resize', this.debounceDraw, false);
-      } else {
-        window.removeEventListener('resize', this.debounceDraw);
-      }
-    }
+    // if (next.responsive !== this.props.responsive) {
+    //   if (next.responsive) {
+    //     window.addEventListener('resize', this.debounceDraw, false);
+    //   } else {
+    //     window.removeEventListener('resize', this.debounceDraw);
+    //   }
+    // }
   }
 
   shouldComponentUpdate() {
     return false;
   }
 
-  componentWillUnmount() {
-    window.removeEventListener('resize', this.debounceDraw);
-  }
+  // componentWillUnmount() {
+  //   window.removeEventListener('resize', this.debounceDraw);
+  // }
 
-  debounceDraw = animate => {
-    clearTimeout(this.state.resizing);
-    const resizing = setTimeout(() => this.draw(animate), 200);
-    this.setState({
-      resizing
-    });
+  // debounceDraw = animate => {
+  //   clearTimeout(this.state.resizing);
+  //   const resizing = setTimeout(() => this.draw(animate), 200);
+  //   this.setState({
+  //     resizing
+  //   });
+  // };
+
+  draw = async (animate, data) => {
+    // const width = this.getWidth(this.props, this.wrapper);
+    // let data = this.state.data;
+    // if (this.state.width !== width) {
+    //   data = await calculateWaveData(
+    //     this.props.buffer,
+    //     width,
+    //     this.props.waveStyle.pointWidth
+    //   );
+    //   this.setState({ data, width });
+    // }
+    console.log('draw');
+    drawWaveform(
+      data || this.state.data,
+      this.canvas,
+      this.props.markerStyle,
+      -1,
+      {
+        ...this.props.waveStyle,
+        animate: this.props.waveStyle.animate && animate
+      },
+      this.props.height,
+      this.props.width
+      // this.props.responsive
+      //   ? this.wrapper.offsetHeight
+      //   : this.props.waveStyle.height,
+      // width
+    );
   };
 
-  draw = async animate => {
-    const width = this.getWidth(this.props, this.wrapper);
-    let data = this.state.data;
-    if (this.state.width !== width) {
-      data = await calculateWaveData(
-        this.props.buffer,
-        width,
-        this.props.waveStyle.pointWidth
-      );
-      this.setState({ data, width });
-    }
-    drawWaveform(data, this.canvas, {
-      ...this.props.waveStyle,
-      animate: this.props.waveStyle.animate && animate,
-      height: this.props.responsive
-        ? this.wrapper.offsetHeight
-        : this.props.waveStyle.height,
-      width
-    });
-  };
-
-  getWidth(props, wrapper) {
-    return props.responsive ? wrapper.offsetWidth : props.waveStyle.width;
-  }
+  // getWidth(props, wrapper) {
+  //   return props.responsive ? wrapper.offsetWidth : props.waveStyle.width;
+  // }
 
   handleClick = e => {
     if (this.props.onPositionChange) {
@@ -96,21 +107,20 @@ class Waveform extends React.Component {
 
   render() {
     return (
-      <div
-        ref={wrapper => (this.wrapper = wrapper)}
-        style={{ height: '100%', width: '100%' }}
-      >
-        <canvas
-          onClick={this.handleClick}
-          ref={canvas => (this.canvas = canvas)}
-        />
-      </div>
+      <canvas
+        onClick={this.handleClick}
+        ref={canvas => (this.canvas = canvas)}
+        style={{
+          height: '100%',
+          width: '100%'
+        }}
+      />
     );
   }
 }
 
 Waveform.defaultProps = {
-  responsive: false,
+  // responsive: false,
   waveStyle: {
     animate: true,
     color: '#000',
@@ -119,18 +129,19 @@ Waveform.defaultProps = {
     width: 500
   }
 };
-
+/* eslint-disable react/no-unused-prop-types */
 Waveform.propTypes = {
   buffer: PropTypes.object,
+  height: PropTypes.number,
   onPositionChange: PropTypes.func,
-  responsive: PropTypes.bool,
+  // position: PropTypes.number,
+  // responsive: PropTypes.bool,
   waveStyle: PropTypes.shape({
     animate: PropTypes.bool,
     color: PropTypes.string,
-    height: PropTypes.number,
-    pointWidth: PropTypes.number,
-    width: PropTypes.number
-  })
+    pointWidth: PropTypes.number
+  }),
+  width: PropTypes.number
 };
 
 export default Waveform;

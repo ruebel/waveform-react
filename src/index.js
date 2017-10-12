@@ -1,3 +1,3 @@
-import Waveform from './Waveform';
+import Waveform from './Wrapper';
 
 export default Waveform;

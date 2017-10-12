@@ -47,26 +47,55 @@ const drawPoints = (ctx, bounds, style, maxAmp, scaleFactor = 1) => {
     );
   });
 };
+
+// const drawPositionMarker = (canvasSize, ctx, markerStyle, position = -1) => {
+//   if (position < 0 || position > 1) {
+//     return;
+//   }
+//   ctx.fillStyle = markerStyle.color || '#fff';
+//   ctx.fillRect(
+//     position * canvasSize.width,
+//     0,
+//     markerStyle.width || 2,
+//     canvasSize.height
+//   );
+//   ctx.stroke();
+// };
 /**
  * Draw a waveform on a canvas
  * buffer - waveform buffer
  * canvas - HTML5 canvas reference
  * style - line style to use (color)
  */
-export const drawWaveform = (bounds, canvas, style) => {
+export const drawWaveform = (
+  bounds,
+  canvas,
+  markerStyle,
+  position = -1,
+  waveStyle,
+  height = 300,
+  width
+) => {
   return new Promise(resolve => {
     if (!canvas || !bounds || !bounds.length) return resolve();
     const ctx = canvas.getContext('2d');
     // clear the canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     // get our canvas size
-    canvas.width = style.width || window.innerWidth;
-    const height = (canvas.height = style.height || 300);
+    const canvasSize = {
+      height: (canvas.height = height),
+      width: (canvas.width = width)
+    };
     // set up line style
-    ctx.fillStyle = style.color;
+    ctx.fillStyle = waveStyle.color;
     // find the max height we can draw
-    const maxAmp = height / 2;
-    animateWave(ctx, bounds, style, maxAmp, style.animate ? 1 : 100);
+    const maxAmp = canvasSize.height / 2;
+    if (waveStyle.animate) {
+      animateWave(ctx, bounds, waveStyle, maxAmp, 1);
+    } else {
+      drawPoints(ctx, bounds, waveStyle, maxAmp);
+    }
+    // drawPositionMarker(canvasSize, ctx, markerStyle, position);
     resolve();
   });
 };
