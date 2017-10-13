@@ -10,6 +10,17 @@ import Waveform from '../lib';
 import { getAudioBuffer, getContext } from './utils';
 import { color } from '../styles/theme';
 
+const Columns = styled.div`
+  display: flex;
+  flex-direction: row;
+`;
+
+const Column = styled.div`
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+`;
+
 const Heading = styled.div`
   font-weight: 600;
   padding-right: 20px;
@@ -108,42 +119,62 @@ class App extends React.PureComponent {
         <Title>Waveform</Title>
         <Button onClick={() => this.getFile()}>Example File</Button>
         <FileInput accept="audio/*" onChange={this.handleFile} />
-        <InputGroup>
-          <Heading>Color</Heading>
-          <ColorInput
-            color={this.state.waveStyle.color}
-            onChange={e => this.setValue(e.hex, 'color', 'waveStyle')}
-          />
-        </InputGroup>
-        <InputGroup>
-          <Heading>Point Width</Heading>
-          <NumberInput
-            onChange={e => this.setValue(e, 'pointWidth', 'waveStyle')}
-            value={this.state.waveStyle.pointWidth}
-          />
-        </InputGroup>
-        <InputGroup>
-          <Heading>Animate</Heading>
-          <Checkbox
-            onChange={e =>
-              this.setValue(e.target.checked, 'animate', 'waveStyle')}
-            value={this.state.waveStyle.animate}
-          />
-        </InputGroup>
-        <InputGroup>
-          <Heading>Responsive</Heading>
-          <Checkbox
-            onChange={e => this.setValue(e.target.checked, 'responsive')}
-            value={this.state.responsive}
-          />
-        </InputGroup>
-        <InputGroup>
-          <Heading>Show Position Marker ({this.state.position})</Heading>
-          <Checkbox
-            onChange={e => this.setValue(e.target.checked, 'showPosition')}
-            value={this.state.showPosition}
-          />
-        </InputGroup>
+        <Columns>
+          <Column>
+            <InputGroup>
+              <Heading>Wave Color</Heading>
+              <ColorInput
+                color={this.state.waveStyle.color}
+                onChange={e => this.setValue(e.hex, 'color', 'waveStyle')}
+              />
+            </InputGroup>
+            <InputGroup>
+              <Heading>Point Width</Heading>
+              <NumberInput
+                onChange={e => this.setValue(e, 'pointWidth', 'waveStyle')}
+                value={this.state.waveStyle.pointWidth}
+              />
+            </InputGroup>
+            <InputGroup>
+              <Heading>Animate</Heading>
+              <Checkbox
+                onChange={e =>
+                  this.setValue(e.target.checked, 'animate', 'waveStyle')}
+                value={this.state.waveStyle.animate}
+              />
+            </InputGroup>
+            <InputGroup>
+              <Heading>Responsive</Heading>
+              <Checkbox
+                onChange={e => this.setValue(e.target.checked, 'responsive')}
+                value={this.state.responsive}
+              />
+            </InputGroup>
+          </Column>
+          <Column>
+            <InputGroup>
+              <Heading>Show Position Marker</Heading>
+              <Checkbox
+                onChange={e => this.setValue(e.target.checked, 'showPosition')}
+                value={this.state.showPosition}
+              />
+            </InputGroup>
+            <InputGroup>
+              <Heading>Marker Width</Heading>
+              <NumberInput
+                onChange={e => this.setValue(e, 'width', 'markerStyle')}
+                value={this.state.markerStyle.width}
+              />
+            </InputGroup>
+            <InputGroup>
+              <Heading>Marker Color</Heading>
+              <ColorInput
+                color={this.state.markerStyle.color}
+                onChange={e => this.setValue(e.hex, 'color', 'markerStyle')}
+              />
+            </InputGroup>
+          </Column>
+        </Columns>
         <WaveformWrapper>
           <Waveform
             buffer={this.state.buffer}

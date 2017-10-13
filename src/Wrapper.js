@@ -6,6 +6,7 @@ import Waveform from './Waveform';
 
 class Wrapper extends React.Component {
   state = {
+    dragging: false,
     height: this.props.height,
     resizing: null,
     width: this.props.width
@@ -69,6 +70,27 @@ class Wrapper extends React.Component {
     }
   };
 
+  handleMouseDown = e => {
+    this.setState({ dragging: true });
+    if (this.props.onPositionChange) {
+      this.props.onPositionChange(
+        e.nativeEvent.offsetX / this.wrapper.offsetWidth
+      );
+    }
+  };
+
+  handleMouseMove = e => {
+    if (this.state.dragging && this.props.onPositionChange) {
+      this.props.onPositionChange(
+        e.nativeEvent.offsetX / this.wrapper.offsetWidth
+      );
+    }
+  };
+
+  handleMouseUp = () => {
+    this.setState({ dragging: false });
+  };
+
   render() {
     const {
       buffer,
@@ -81,6 +103,9 @@ class Wrapper extends React.Component {
     return (
       <div
         onClick={this.handleClick}
+        onMouseDown={this.handleMouseDown}
+        onMouseMove={this.handleMouseMove}
+        onMouseUp={this.handleMouseUp}
         ref={wrapper => (this.wrapper = wrapper)}
         style={{
           height: responsive ? '100%' : this.props.height,
