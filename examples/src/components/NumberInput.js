@@ -6,7 +6,7 @@ const NumberInput = ({ max = 10, min = 1, onChange, value }) => {
     <input
       max={max}
       min={min}
-      onChange={e => onChange(Number.parseInt(e.target.value))}
+      onChange={e => onChange(Number.parseInt(e.target.value, 10))}
       type="number"
       value={value}
     />

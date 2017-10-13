@@ -45,7 +45,7 @@ class App extends React.PureComponent {
     height: 150,
     markerStyle: {
       color: color.tertiary,
-      width: 2
+      width: 4
     },
     position: 0,
     responsive: true,

@@ -13,37 +13,40 @@ class Wrapper extends React.Component {
 
   componentDidMount() {
     if (this.props.responsive) {
-      window.addEventListener('resize', this.debounceDraw, false);
+      window.addEventListener('resize', this.getDimensions, false);
     }
   }
 
   componentWillReceiveProps(next) {
     if (next.height !== this.props.height || next.width !== this.props.width) {
+      const height = this.getHeight(next, this.wrapper);
       const width = this.getWidth(next, this.wrapper);
-      this.setState({ width });
-      this.debounceDraw();
+      this.setState({ height, width }, this.getDimensions);
     }
     if (next.responsive !== this.props.responsive) {
       if (next.responsive) {
-        window.addEventListener('resize', this.debounceDraw, false);
+        window.addEventListener('resize', this.getDimensions, false);
       } else {
-        window.removeEventListener('resize', this.debounceDraw);
+        window.removeEventListener('resize', this.getDimensions);
       }
     }
   }
 
   componentWillUnmount() {
-    window.removeEventListener('resize', this.debounceDraw);
+    window.removeEventListener('resize', this.getDimensions);
   }
 
-  debounceDraw = () => {
+  getDimensions = () => {
     clearTimeout(this.state.resizing);
     const resizing = setTimeout(() => {
-      console.log('debounced');
-      this.setState({
-        height: this.getHeight(this.props, this.wrapper),
-        width: this.getWidth(this.props, this.wrapper)
-      });
+      const height = this.getHeight(this.props, this.wrapper);
+      const width = this.getWidth(this.props, this.wrapper);
+      if (height !== this.state.height || width !== this.state.width) {
+        this.setState({
+          height,
+          width
+        });
+      }
     }, 200);
     this.setState({
       resizing
@@ -58,31 +61,41 @@ class Wrapper extends React.Component {
     return props.responsive ? wrapper.offsetWidth : props.width;
   }
 
+  handleClick = e => {
+    if (this.props.onPositionChange) {
+      this.props.onPositionChange(
+        e.nativeEvent.offsetX / this.wrapper.offsetWidth
+      );
+    }
+  };
+
   render() {
     const {
+      buffer,
       markerStyle,
       position,
+      responsive,
       showPosition,
-      ...waveformProps
+      waveStyle
     } = this.props;
-    console.log('rendering', this.state.height, this.state.width);
     return (
       <div
+        onClick={this.handleClick}
         ref={wrapper => (this.wrapper = wrapper)}
         style={{
-          height: this.props.responsive ? '100%' : this.props.height,
+          height: responsive ? '100%' : this.props.height,
           position: 'relative',
-          width: this.props.responsive ? '100%' : this.props.width
+          width: responsive ? '100%' : this.props.width
         }}
       >
         <Waveform
+          buffer={buffer}
           height={this.state.height}
+          waveStyle={waveStyle}
           width={this.state.width}
-          {...waveformProps}
         />
-        {showPosition && (
-          <Position markerStyle={markerStyle} position={position} />
-        )}
+        {showPosition &&
+          buffer && <Position markerStyle={markerStyle} position={position} />}
       </div>
     );
   }

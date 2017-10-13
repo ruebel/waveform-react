@@ -5,16 +5,23 @@ const Position = ({ markerStyle, position }) => {
   return (
     <div
       style={{
+        background: markerStyle.color,
         height: '100%',
         left: position * 100 + '%',
         position: 'absolute',
         top: 0,
-        width: markerStyle.width
+        width: markerStyle.width + 'px'
       }}
-    >
-      Test
-    </div>
+    />
   );
+};
+
+Position.defaultProps = {
+  markerStyle: {
+    color: '#fff',
+    width: 4
+  },
+  position: 0
 };
 
 Position.propTypes = {

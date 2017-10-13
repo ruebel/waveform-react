@@ -15,17 +15,14 @@ const animateWave = (ctx, bounds, style, maxAmp, scaleFactor = 1) => {
  * Calculate all wave data points
  */
 export const calculateWaveData = (buffer, width, pointWidth) => {
-  return new Promise(resolve => {
-    if (!buffer) return resolve([]);
-    // get the wave data
-    const wave = buffer.getChannelData(0);
-    const pointCnt = width / pointWidth;
-    // find how many steps we are going to draw
-    const step = Math.ceil(wave.length / pointCnt);
-    // Get array of bounds of each step
-    const bounds = getBoundArray(wave, pointCnt, step);
-    resolve(bounds);
-  });
+  if (!buffer) return [];
+  // get the wave data
+  const wave = buffer.getChannelData(0);
+  const pointCnt = width / pointWidth;
+  // find how many steps we are going to draw
+  const step = Math.ceil(wave.length / pointCnt);
+  // Get array of bounds of each step
+  return getBoundArray(wave, pointCnt, step);
 };
 /**
  * Convienence function to draw a point in waveform
@@ -47,20 +44,6 @@ const drawPoints = (ctx, bounds, style, maxAmp, scaleFactor = 1) => {
     );
   });
 };
-
-// const drawPositionMarker = (canvasSize, ctx, markerStyle, position = -1) => {
-//   if (position < 0 || position > 1) {
-//     return;
-//   }
-//   ctx.fillStyle = markerStyle.color || '#fff';
-//   ctx.fillRect(
-//     position * canvasSize.width,
-//     0,
-//     markerStyle.width || 2,
-//     canvasSize.height
-//   );
-//   ctx.stroke();
-// };
 /**
  * Draw a waveform on a canvas
  * buffer - waveform buffer
@@ -76,28 +59,24 @@ export const drawWaveform = (
   height = 300,
   width
 ) => {
-  return new Promise(resolve => {
-    if (!canvas || !bounds || !bounds.length) return resolve();
-    const ctx = canvas.getContext('2d');
-    // clear the canvas
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    // get our canvas size
-    const canvasSize = {
-      height: (canvas.height = height),
-      width: (canvas.width = width)
-    };
-    // set up line style
-    ctx.fillStyle = waveStyle.color;
-    // find the max height we can draw
-    const maxAmp = canvasSize.height / 2;
-    if (waveStyle.animate) {
-      animateWave(ctx, bounds, waveStyle, maxAmp, 1);
-    } else {
-      drawPoints(ctx, bounds, waveStyle, maxAmp);
-    }
-    // drawPositionMarker(canvasSize, ctx, markerStyle, position);
-    resolve();
-  });
+  if (!canvas || !bounds || !bounds.length) return;
+  const ctx = canvas.getContext('2d');
+  // clear the canvas
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  // get our canvas size
+  const canvasSize = {
+    height: (canvas.height = height),
+    width: (canvas.width = width)
+  };
+  // set up line style
+  ctx.fillStyle = waveStyle.color;
+  // find the max height we can draw
+  const maxAmp = canvasSize.height / 2;
+  if (waveStyle.animate) {
+    animateWave(ctx, bounds, waveStyle, maxAmp, 1);
+  } else {
+    drawPoints(ctx, bounds, waveStyle, maxAmp);
+  }
 };
 /**
  * Calculate the bounds of each step in the buffer
