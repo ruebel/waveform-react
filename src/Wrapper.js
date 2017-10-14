@@ -102,9 +102,9 @@ class Wrapper extends React.Component {
     } = this.props;
     return (
       <div
+        id="test"
         onClick={this.handleClick}
         onMouseDown={this.handleMouseDown}
-        onMouseMove={this.handleMouseMove}
         onMouseUp={this.handleMouseUp}
         ref={wrapper => (this.wrapper = wrapper)}
         style={{
@@ -115,6 +115,7 @@ class Wrapper extends React.Component {
       >
         <Waveform
           buffer={buffer}
+          handleMouseMove={this.handleMouseMove}
           height={this.state.height}
           waveStyle={waveStyle}
           width={this.state.width}

@@ -52,6 +52,7 @@ class Waveform extends React.Component {
   render() {
     return (
       <canvas
+        onMouseMove={this.props.handleMouseMove}
         ref={canvas => (this.canvas = canvas)}
         style={{
           height: '100%',
@@ -74,6 +75,7 @@ Waveform.defaultProps = {
 
 Waveform.propTypes = {
   buffer: PropTypes.object,
+  handleMouseMove: PropTypes.func,
   height: PropTypes.number,
   waveStyle: PropTypes.shape({
     animate: PropTypes.bool,

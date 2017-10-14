@@ -10,6 +10,7 @@ const Position = ({ markerStyle, position }) => {
         left: position * 100 + '%',
         position: 'absolute',
         top: 0,
+        transition: 'all 20ms ease-in-out',
         width: markerStyle.width + 'px'
       }}
     />
