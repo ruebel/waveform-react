@@ -1,9 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const Position = ({ markerStyle, position }) => {
+const Position = ({ id, markerStyle, position }) => {
   return (
     <div
+      id={id}
       style={{
         background: markerStyle.color,
         height: '100%',
@@ -26,6 +27,7 @@ Position.defaultProps = {
 };
 
 Position.propTypes = {
+  id: PropTypes.string,
   markerStyle: PropTypes.shape({
     color: PropTypes.string,
     width: PropTypes.number

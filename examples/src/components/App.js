@@ -178,14 +178,14 @@ class App extends React.PureComponent {
         <WaveformWrapper>
           <Waveform
             buffer={this.state.buffer}
-            // height={this.state.height}
+            height={this.state.height}
             markerStyle={this.state.markerStyle}
             onPositionChange={pos => this.setValue(pos, 'position')}
             position={this.state.position}
             responsive={this.state.responsive}
             showPosition={this.state.showPosition}
             waveStyle={this.state.waveStyle}
-            // width={this.state.width}
+            width={this.state.width}
           />
         </WaveformWrapper>
       </Wrapper>

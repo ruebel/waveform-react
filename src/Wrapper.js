@@ -63,23 +63,23 @@ class Wrapper extends React.Component {
     return props.responsive ? wrapper.offsetHeight : props.height;
   }
 
+  getMousePosition = e => {
+    const x = e.nativeEvent.offsetX;
+    if (e.nativeEvent.target.id === 'posMarker') {
+      return x + this.props.position * this.wrapper.offsetWidth;
+    }
+    return x;
+  };
+
   getWidth(props, wrapper) {
     return props.responsive ? wrapper.offsetWidth : props.width;
   }
-
-  handleClick = e => {
-    if (this.props.onPositionChange) {
-      this.props.onPositionChange(
-        e.nativeEvent.offsetX / this.wrapper.offsetWidth
-      );
-    }
-  };
 
   handleMouseDown = e => {
     this.setState({ dragging: true });
     if (this.props.onPositionChange) {
       this.props.onPositionChange(
-        e.nativeEvent.offsetX / this.wrapper.offsetWidth
+        this.getMousePosition(e) / this.wrapper.offsetWidth
       );
     }
   };
@@ -87,13 +87,18 @@ class Wrapper extends React.Component {
   handleMouseMove = e => {
     if (this.state.dragging && this.props.onPositionChange) {
       this.props.onPositionChange(
-        e.nativeEvent.offsetX / this.wrapper.offsetWidth
+        this.getMousePosition(e) / this.wrapper.offsetWidth
       );
     }
   };
 
-  handleMouseUp = () => {
+  handleMouseUp = e => {
     this.setState({ dragging: false });
+    if (this.props.onPositionChange) {
+      this.props.onPositionChange(
+        this.getMousePosition(e) / this.wrapper.offsetWidth
+      );
+    }
   };
 
   render() {
@@ -107,9 +112,8 @@ class Wrapper extends React.Component {
     } = this.props;
     return (
       <div
-        id="test"
-        onClick={this.handleClick}
         onMouseDown={this.handleMouseDown}
+        onMouseMove={this.handleMouseMove}
         onMouseUp={this.handleMouseUp}
         ref={wrapper => (this.wrapper = wrapper)}
         style={{
@@ -120,13 +124,19 @@ class Wrapper extends React.Component {
       >
         <Waveform
           buffer={buffer}
-          handleMouseMove={this.handleMouseMove}
           height={this.state.height}
+          id="waveform"
           waveStyle={waveStyle}
           width={this.state.width}
         />
         {showPosition &&
-          buffer && <Position markerStyle={markerStyle} position={position} />}
+          buffer && (
+            <Position
+              id="posMarker"
+              markerStyle={markerStyle}
+              position={position}
+            />
+          )}
       </div>
     );
   }
