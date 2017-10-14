@@ -125,7 +125,6 @@ class Wrapper extends React.Component {
         <Waveform
           buffer={buffer}
           height={this.state.height}
-          id="waveform"
           waveStyle={waveStyle}
           width={this.state.width}
         />
