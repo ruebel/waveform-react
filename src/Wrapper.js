@@ -19,7 +19,12 @@ class Wrapper extends React.Component {
   }
 
   componentWillReceiveProps(next) {
-    if (next.height !== this.props.height || next.width !== this.props.width) {
+    if (
+      next.height !== this.props.height ||
+      next.width !== this.props.width ||
+      !next.height ||
+      !next.width
+    ) {
       const height = this.getHeight(next, this.wrapper);
       const width = this.getWidth(next, this.wrapper);
       this.setState({ height, width }, this.getDimensions);
@@ -108,9 +113,9 @@ class Wrapper extends React.Component {
         onMouseUp={this.handleMouseUp}
         ref={wrapper => (this.wrapper = wrapper)}
         style={{
-          height: responsive ? '100%' : this.props.height,
+          height: responsive ? '100%' : this.props.height + 'px',
           position: 'relative',
-          width: responsive ? '100%' : this.props.width
+          width: responsive ? '100%' : this.props.width + 'px'
         }}
       >
         <Waveform
