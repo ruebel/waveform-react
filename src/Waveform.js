@@ -33,7 +33,7 @@ class Waveform extends React.Component {
     return false;
   }
 
-  draw = async (animate, next) => {
+  draw = async (animate = true, next) => {
     const props = next || this.props;
     drawWaveform(
       this.state.data,
