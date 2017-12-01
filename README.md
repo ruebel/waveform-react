@@ -1,13 +1,17 @@
 # waveform-react
+
 > draw audio waveforms with react
 
 ## example
+
 https://ruebel.github.io/waveform-react
 
 ## installation
-```npm install waveform-react```
+
+`npm install waveform-react`
 
 ## usage
+
 ```js
 import Waveform from 'waveform-react';
 
@@ -18,7 +22,7 @@ class MyComponent extends React.Component {
         // Audio buffer
         buffer={this.state.buffer}
         // waveform height
-        height: 150,
+        height={150}
         markerStyle={{
           // Position marker color
           color: '#fff',
@@ -42,7 +46,7 @@ class MyComponent extends React.Component {
           pointWidth: 1
         }}
         // waveform width
-        width: 900
+        width={900}
       />
     );
   }
@@ -50,4 +54,5 @@ class MyComponent extends React.Component {
 ```
 
 ## license
+
 MIT © [Randy Uebel](randy.uebel@gmail.com)
