@@ -1,5 +1,29 @@
 /**
- * Animate the drawing of the wave
+ * Animate the drawing of a line wave
+ */
+const animateLine = (ctx, bounds, style, maxAmp, index = 0) => {
+  if (index === 0) {
+    ctx.moveTo(0, maxAmp);
+  }
+  if (index < bounds.length) {
+    setTimeout(() => {
+      requestAnimationFrame(() =>
+        drawPoint(
+          ctx,
+          index * style.pointWidth,
+          (1 + bounds[index].min) * maxAmp,
+          style.pointWidth,
+          Math.max(1, (bounds[index].max - bounds[index].min) * maxAmp),
+          style.plot
+        )
+      );
+      ctx.stroke();
+      animateLine(ctx, bounds, style, maxAmp, index + 1);
+    }, 1);
+  }
+};
+/**
+ * Animate the drawing of a bar wave
  */
 const animateWave = (ctx, bounds, style, maxAmp, scaleFactor = 1) => {
   if (scaleFactor <= 100) {
@@ -27,22 +51,34 @@ export const calculateWaveData = (buffer, width, pointWidth) => {
 /**
  * Convienence function to draw a point in waveform
  */
-const drawPoint = (ctx, x, y, width, height) => {
-  ctx.fillRect(x, y, width, height);
+const drawPoint = (ctx, x, y, width, height, type) => {
+  if (type === 'bar') {
+    ctx.fillRect(x, y, width, height);
+  } else {
+    ctx.lineTo(x, y);
+    ctx.lineTo(x + width / 2, y + height);
+  }
 };
 /**
  * Draw all the points in the wave
  */
 const drawPoints = (ctx, bounds, style, maxAmp, scaleFactor = 1) => {
+  if (style.plot === 'line') {
+    ctx.moveTo(0, maxAmp);
+  }
   bounds.forEach((bound, i) => {
     drawPoint(
       ctx,
       i * style.pointWidth,
       (1 + bound.min) * maxAmp,
       style.pointWidth,
-      Math.max(1, (bound.max - bound.min) * maxAmp) * scaleFactor
+      Math.max(1, (bound.max - bound.min) * maxAmp) * scaleFactor,
+      style.plot
     );
   });
+  if (style.plot === 'line') {
+    ctx.stroke();
+  }
 };
 /**
  * Draw a waveform on a canvas
@@ -70,10 +106,15 @@ export const drawWaveform = (
   };
   // set up line style
   ctx.fillStyle = waveStyle.color;
+  ctx.strokeStyle = waveStyle.color;
   // find the max height we can draw
   const maxAmp = canvasSize.height / 2;
   if (waveStyle.animate) {
-    animateWave(ctx, bounds, waveStyle, maxAmp, 1);
+    if (waveStyle.plot === 'line') {
+      animateLine(ctx, bounds, waveStyle, maxAmp);
+    } else {
+      animateWave(ctx, bounds, waveStyle, maxAmp, 1);
+    }
   } else {
     drawPoints(ctx, bounds, waveStyle, maxAmp);
   }

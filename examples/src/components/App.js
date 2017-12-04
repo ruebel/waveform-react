@@ -64,6 +64,7 @@ class App extends React.PureComponent {
     waveStyle: {
       animate: true,
       color: color.primary,
+      plot: 'bar',
       pointWidth: 1
     },
     width: 900
@@ -139,7 +140,8 @@ class App extends React.PureComponent {
               <Heading>Animate</Heading>
               <Checkbox
                 onChange={e =>
-                  this.setValue(e.target.checked, 'animate', 'waveStyle')}
+                  this.setValue(e.target.checked, 'animate', 'waveStyle')
+                }
                 value={this.state.waveStyle.animate}
               />
             </InputGroup>
@@ -148,6 +150,19 @@ class App extends React.PureComponent {
               <Checkbox
                 onChange={e => this.setValue(e.target.checked, 'responsive')}
                 value={this.state.responsive}
+              />
+            </InputGroup>
+            <InputGroup>
+              <Heading>Plot Type (Line = true)</Heading>
+              <Checkbox
+                onChange={e =>
+                  this.setValue(
+                    e.target.checked ? 'line' : 'bar',
+                    'plot',
+                    'waveStyle'
+                  )
+                }
+                value={this.state.waveStyle.plot === 'line'}
               />
             </InputGroup>
           </Column>

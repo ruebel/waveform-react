@@ -63,13 +63,14 @@ class Waveform extends React.Component {
 }
 
 Waveform.defaultProps = {
+  height: 300,
   waveStyle: {
     animate: true,
     color: '#000',
-    height: 300,
-    pointWidth: 1,
-    width: 500
-  }
+    plot: 'bar',
+    pointWidth: 1
+  },
+  width: 500
 };
 
 Waveform.propTypes = {
@@ -78,6 +79,7 @@ Waveform.propTypes = {
   waveStyle: PropTypes.shape({
     animate: PropTypes.bool,
     color: PropTypes.string,
+    plot: PropTypes.oneOf(['bar', 'line']),
     pointWidth: PropTypes.number
   }),
   width: PropTypes.number
