@@ -1,37 +1,37 @@
 /**
- * Animate the drawing of a line wave
- */
-const animateLine = (ctx, bounds, style, maxAmp, index = 0) => {
-  if (index === 0) {
-    ctx.moveTo(0, maxAmp);
-  }
-  if (index < bounds.length) {
-    setTimeout(() => {
-      requestAnimationFrame(() =>
-        drawPoint(
-          ctx,
-          index * style.pointWidth,
-          (1 + bounds[index].min) * maxAmp,
-          style.pointWidth,
-          Math.max(1, (bounds[index].max - bounds[index].min) * maxAmp),
-          style.plot
-        )
-      );
-      ctx.stroke();
-      animateLine(ctx, bounds, style, maxAmp, index + 1);
-    }, 1);
-  }
-};
-/**
  * Animate the drawing of a bar wave
  */
-const animateWave = (ctx, bounds, style, maxAmp, scaleFactor = 1) => {
+const animateBar = (ctx, bounds, style, maxAmp, scaleFactor = 1) => {
   if (scaleFactor <= 100) {
     setTimeout(() => {
       requestAnimationFrame(() =>
         drawPoints(ctx, bounds, style, maxAmp, scaleFactor / 100)
       );
-      animateWave(ctx, bounds, style, maxAmp, scaleFactor + 1);
+      animateBar(ctx, bounds, style, maxAmp, scaleFactor + 1);
+    }, 1);
+  }
+};
+/**
+ * Animate the drawing of a line wave
+ */
+const animateLine = (canvas, ctx, bounds, style, maxAmp, step, index = 0) => {
+  if (index < bounds.length) {
+    setTimeout(() => {
+      ctx.moveTo(0, maxAmp);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.beginPath();
+      for (let i = 0; i < index + step && i < bounds.length; i++) {
+        drawPoint(
+          ctx,
+          i * style.pointWidth,
+          (1 + bounds[i].min) * maxAmp,
+          style.pointWidth,
+          Math.max(1, (bounds[i].max - bounds[i].min) * maxAmp),
+          style.plot
+        );
+      }
+      ctx.stroke();
+      animateLine(canvas, ctx, bounds, style, maxAmp, step, index + step);
     }, 1);
   }
 };
@@ -111,9 +111,10 @@ export const drawWaveform = (
   const maxAmp = canvasSize.height / 2;
   if (waveStyle.animate) {
     if (waveStyle.plot === 'line') {
-      animateLine(ctx, bounds, waveStyle, maxAmp);
+      const step = Math.floor(bounds.length / 50);
+      animateLine(canvas, ctx, bounds, waveStyle, maxAmp, step);
     } else {
-      animateWave(ctx, bounds, waveStyle, maxAmp, 1);
+      animateBar(ctx, bounds, waveStyle, maxAmp, 1);
     }
   } else {
     drawPoints(ctx, bounds, waveStyle, maxAmp);

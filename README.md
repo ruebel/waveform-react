@@ -31,6 +31,8 @@ class MyComponent extends React.Component {
         }}
         // Optionally handle user manually changing position (0 - 1)
         onPositionChange={pos => console.log(pos)}
+        // Wave plot type (line or bar)
+        plot="bar"
         // Marker position on waveform (0 - 1)
         position={0.5}
         // redraw waveform on window size change (default: true)

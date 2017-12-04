@@ -132,6 +132,7 @@ class App extends React.PureComponent {
             <InputGroup>
               <Heading>Point Width</Heading>
               <NumberInput
+                max={20}
                 onChange={e => this.setValue(e, 'pointWidth', 'waveStyle')}
                 value={this.state.waveStyle.pointWidth}
               />
@@ -153,7 +154,7 @@ class App extends React.PureComponent {
               />
             </InputGroup>
             <InputGroup>
-              <Heading>Plot Type (Line = true)</Heading>
+              <Heading>Plot Type (checked = 'line')</Heading>
               <Checkbox
                 onChange={e =>
                   this.setValue(
