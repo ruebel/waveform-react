@@ -13,6 +13,11 @@ class Wrapper extends React.Component {
   };
 
   componentDidMount() {
+    if (!this.props.height ||
+        !this.props.width) {
+      this.getDimensions();
+    }
+
     if (this.props.responsive) {
       window.addEventListener('resize', this.getDimensions, false);
     }
